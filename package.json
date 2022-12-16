@@ -25,7 +25,8 @@
       }
    ],
    "scripts": {
-      "build": "tsc"
+      "build": "tsc",
+      "prepare": "npm run build"
    },
    "dependencies": {
       "commons-math-interpolation": "^2.2.1",
