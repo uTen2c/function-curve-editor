@@ -94,13 +94,13 @@ class FunctionPlotter {
       const xMin = (wctx.eState.relevantXMin != undefined) ? Math.max(0,    Math.min(width, wctx.mapLogicalToCanvasXCoordinate(wctx.eState.relevantXMin))) : 0;
       const xMax = (wctx.eState.relevantXMax != undefined) ? Math.max(xMin, Math.min(width, wctx.mapLogicalToCanvasXCoordinate(wctx.eState.relevantXMax))) : width;
       if (xMin > 0) {
-         ctx.fillStyle = "#F8F8F8";
+         ctx.fillStyle = "#0d1116";
          ctx.fillRect(0, 0, xMin, height); }
       if (xMax > xMin) {
-         ctx.fillStyle = "#FFFFFF";
+         ctx.fillStyle = "#161d29";
          ctx.fillRect(xMin, 0, xMax - xMin, height); }
       if (xMax < width) {
-         ctx.fillStyle = "#F8F8F8";
+         ctx.fillStyle = "#0d1116";
          ctx.fillRect(xMax, 0, width - xMax, height); }
       ctx.restore(); }
 
@@ -115,10 +115,10 @@ class FunctionPlotter {
       const isSelected   = knotNdx == wctx.iState.selectedKnotNdx;
       const isPotential  = knotNdx == wctx.iState.potentialKnotNdx;
       const bold = isDragging || isSelected || isPotential;
-      const r = bold ? 5 : 4;
+      const r = bold ? 6 : 4;
       ctx.arc(point.x, point.y, r, 0, 2 * Math.PI);
-      ctx.lineWidth = bold ? 3 : 1;
-      ctx.strokeStyle = (isDragging || isPotential) ? "#EE5500" : isSelected ? "#0080FF" : "#CC4444";
+      ctx.lineWidth = bold ? 3 : 2;
+      ctx.strokeStyle = (isDragging || isPotential) ? "#f72d3a" : isSelected ? "#3772FF" : "#DF2935";
       ctx.stroke();
       ctx.restore(); }
 
@@ -139,7 +139,7 @@ class FunctionPlotter {
       ctx.save();
       ctx.textBaseline = "bottom";
       ctx.font = "12px";
-      ctx.fillStyle = "#707070";
+      ctx.fillStyle = "#ffffff";
       const x = xy ? cPos + 5 : 5;
       const y = xy ? wctx.canvas.height - 2 : cPos - 2;
       const s = this.formatLabel(value, decPow);
@@ -150,7 +150,7 @@ class FunctionPlotter {
       const wctx = this.wctx;
       const ctx = this.ctx;
       ctx.save();
-      ctx.fillStyle = (p == 0) ? "#989898" : (p % 10 == 0) ? "#D4D4D4" : "#EEEEEE";
+      ctx.fillStyle = (p == 0) ? "#40526b" : (p % 10 == 0) ? "#313f52" : "#212a37";
       ctx.fillRect(xy ? cPos : 0, xy ? 0 : cPos, xy ? 1 : wctx.canvas.width, xy ? wctx.canvas.height : 1);
       ctx.restore(); }
 
@@ -188,7 +188,8 @@ class FunctionPlotter {
          const ly = uniFunction(lx);
          const cy = Math.max(-1E6, Math.min(1E6, wctx.mapLogicalToCanvasYCoordinate(ly)));
          ctx.lineTo(cx, cy); }
-      ctx.strokeStyle = "#44CC44";
+      ctx.strokeStyle = "#0caf61";
+      ctx.lineWidth = 2
       ctx.stroke();
       ctx.restore(); }
 
@@ -295,7 +296,7 @@ class PointerController {
       if (this.pointers.size == 1) {                       // left click or single touch
          this.startDragging();
          wctx.canvas.focus(); }
-       else if (this.pointers.size == 2) {                 // zoom gesture
+      else if (this.pointers.size == 2) {                 // zoom gesture
          this.startZooming(); }}
 
    private pointerMoveEventListener = (event: PointerEvent) => {
@@ -305,7 +306,7 @@ class PointerController {
       this.trackPointer(event);
       if (this.pointers.size == 1) {
          this.drag(); }
-       else if (this.pointers.size == 2 && this.zooming) {
+      else if (this.pointers.size == 2 && this.zooming) {
          this.zoom(); }
       event.preventDefault(); };
 
@@ -372,7 +373,7 @@ class PointerController {
          wctx.moveKnot(wctx.iState.selectedKnotNdx, lPoint2);
          wctx.requestRefresh();
          wctx.fireChangeEvent(); }
-       else if (wctx.iState.planeDragging && this.dragStartLPos) {
+      else if (wctx.iState.planeDragging && this.dragStartLPos) {
          wctx.moveCoordinatePlane(cPoint, this.dragStartLPos);
          wctx.requestRefresh();
          wctx.fireViewportChangeEvent(); }}
@@ -434,11 +435,11 @@ class PointerController {
       let zoomMode: ZoomMode;
       if (event.shiftKey) {
          zoomMode = ZoomMode.y; }
-       else if (event.altKey) {
+      else if (event.altKey) {
          zoomMode = ZoomMode.x; }
-       else if (event.ctrlKey && !isProbablyPad) {
+      else if (event.ctrlKey && !isProbablyPad) {
          zoomMode = ZoomMode.xy; }
-       else {
+      else {
          zoomMode = wctx.eState.primaryZoomMode; }
       let fx: number;
       let fy: number;
@@ -494,8 +495,8 @@ class PointerController {
       const cPoint = this.getCanvasCoordinatesFromEvent(event);
       const knotNdx = this.findNearKnot(cPoint, event.pointerType);
       if (wctx.iState.potentialKnotNdx != knotNdx) {
-        wctx.iState.potentialKnotNdx = knotNdx;
-        wctx.requestRefresh(); }}
+         wctx.iState.potentialKnotNdx = knotNdx;
+         wctx.requestRefresh(); }}
 
    private findNearKnot (cPoint: Point, pointerType: string) : number | undefined {
       const wctx = this.wctx;
@@ -696,11 +697,11 @@ class KeyboardController {
 
 function genKeyName (event: KeyboardEvent) : string {
    const s =
-      (event.altKey   ? "Alt+"   : "") +
-      (event.ctrlKey  ? "Ctrl+"  : "") +
-      (event.shiftKey && event.key.length > 1 ? "Shift+" : "") +
-      (event.metaKey  ? "Meta+"  : "") +
-      event.key;
+       (event.altKey   ? "Alt+"   : "") +
+       (event.ctrlKey  ? "Ctrl+"  : "") +
+       (event.shiftKey && event.key.length > 1 ? "Shift+" : "") +
+       (event.metaKey  ? "Meta+"  : "") +
+       event.key;
    return s; }
 
 //--- Internal widget context --------------------------------------------------
@@ -714,11 +715,11 @@ interface InteractionState {
 interface HistoryState {
    undoStack:                          Point[][];                    // old knot points
    undoStackPos:                       number; }                     // current position within undoStack
-      // Concept:
-      // - Only the knots are saved on the undo stack.
-      // - If undoStackPos == undoStack.length, the current state has changed and is not equal to the last entry.
-      // - If undoStackPos < undoStack.length, the current state is equal to undoStack[undoStackPos] and
-      //   the entries > undoStackPos are redo states.
+// Concept:
+// - Only the knots are saved on the undo stack.
+// - If undoStackPos == undoStack.length, the current state has changed and is not equal to the last entry.
+// - If undoStackPos < undoStack.length, the current state is equal to undoStack[undoStackPos] and
+//   the entries > undoStackPos are redo states.
 
 class WidgetContext {
 
@@ -759,7 +760,7 @@ class WidgetContext {
          this.kbController      = new KeyboardController(this);
          this.resizeObserver.observe(this.canvas);
          canvasMap.set(this.canvas, this.widget); }
-       else {
+      else {
          this.pointerController.dispose();
          this.kbController.dispose();
          this.resizeObserver.unobserve(this.canvas);
@@ -915,8 +916,8 @@ class WidgetContext {
       this.eState.knots.push(knot);
       this.revampKnots();
       const knotNdx = PointUtils.findPoint(this.eState.knots, knot);
-        // (warning: This only works as long as makeXValsStrictMonotonic() modified the knots in-place and
-        // does not construct new knot point objects)
+      // (warning: This only works as long as makeXValsStrictMonotonic() modified the knots in-place and
+      // does not construct new knot point objects)
       if (knotNdx == undefined) {
          throw new Error("Program logic error."); }
       return knotNdx; }
@@ -962,7 +963,7 @@ class WidgetContext {
       let newKnots: Point[];
       try {
          newKnots = PointUtils.decodeCoordinateList(s); }
-       catch (e) {
+      catch (e) {
          await DialogManager.showMsg({titleText: "Error", msgText: "Knot coordinates could not be decoded. " + e});
          return; }
       this.pushUndoHistoryState();
