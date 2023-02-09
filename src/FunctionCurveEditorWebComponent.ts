@@ -46,9 +46,7 @@ const style = `
       display: block;
       contain: content;
       background-color: #f8f8f8;
-      border-style: solid;
-      border-width: 1px;
-      border-color: #dddddd;
+      border: none;
    }
    canvas {
       display: block;
